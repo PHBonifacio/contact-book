@@ -1,16 +1,8 @@
 from email.policy import default
+from pickle import TRUE
+from filehandler import *
 
-
-AGENDA = {
-#    "Pedro" : {
-#        "tel" : "11111111",
-#        "email" : "email@email.com",
-#    },
-#    "Rafa" : {
-#        "tel" : "11111111",
-#        "email" : "email@email.com",
-#    },
-}
+AGENDA = {}
 
 def print_contact(contact):
     print("Name:", contact)
@@ -51,9 +43,12 @@ def edit_contact(name, phone, email):
         print(">>> {} not on book".format(name))
 
 def contact_exist(name):    
-    if name in AGENDA:
-        return True
-    else:
+    try:
+        if name in AGENDA:
+            return True
+        else:
+            return False
+    except:
         return False
 
 def remove_contact(contact):
@@ -72,6 +67,7 @@ def show_menu():
     print("3 - Add Contact")
     print("4 - Edit Contact")
     print("5 - Remove Contact")
+    print("6 - Save Contact Book")
     print("0 - Exit")
     print("----------------------\n")
 
@@ -82,6 +78,7 @@ def get_valid_contact_info(info):
     try:
         contact = input("Insert contact {}\n".format(info))
         if contact.isascii():
+            contact = contact.replace('\r','').replace('\n', '')
             return contact
         else:
             raise NameError('Invalid {}', info)
@@ -108,11 +105,15 @@ def process_cmd(cmd):
         case '5':
             remove_contact(get_valid_contact_info("name"))
             return True
-
+        case '6':
+            SaveContactBook(AGENDA)
+            return True
         case '0':
+            print("Saving contacts before say goodbye\n")
+            SaveContactBook(AGENDA)
             return False
 
-isRunning = True
 
+AGENDA = ReadContactBook()
 while(process_cmd(show_menu())):
     pass
